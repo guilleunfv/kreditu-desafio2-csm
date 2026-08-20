@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreditu — Diagnóstico Ejecutivo | Atom CSM</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a2e; }
+
+  .slide {
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 4px solid #e0e0e0;
+    page-break-after: always;
+  }
+
+  /* Colores */
+  .bg-white { background: #ffffff; }
+  .bg-dark  { background: #1a1a2e; color: #ffffff; }
+  .bg-orange{ background: #E85C1A; color: #ffffff; }
+  .bg-light { background: #FFF5F0; }
+
+  h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.1; }
+  h2 { font-size: 2rem; font-weight: 700; margin-bottom: 32px; }
+  h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+  p  { font-size: 1.05rem; line-height: 1.6; }
+
+  .tag {
+    display: inline-block;
+    background: #E85C1A;
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .tag-dark { background: #1a1a2e; }
+  .tag-yellow { background: #f5a623; }
+  .tag-green { background: #27ae60; }
+
+  /* Métricas */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  .metric {
+    background: white;
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    border-top: 5px solid #e0e0e0;
+  }
+  .metric.red   { border-color: #e74c3c; }
+  .metric.yellow{ border-color: #f5a623; }
+  .metric.green { border-color: #27ae60; }
+
+  .metric-value { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+  .metric-value.red    { color: #e74c3c; }
+  .metric-value.yellow { color: #f5a623; }
+  .metric-label { font-size: 0.85rem; color: #666; margin-top: 8px; }
+  .metric-sub   { font-size: 0.8rem; color: #999; margin-top: 4px; }
+
+  /* Cards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    border-left: 5px solid #E85C1A;
+  }
+  .card.blue  { border-color: #2980b9; }
+  .card.green { border-color: #27ae60; }
+
+  /* Timeline */
+  .timeline { margin-top: 32px; }
+  .phase {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+    margin-bottom: 28px;
+    align-items: start;
+  }
+  .phase-header {
+    background: #E85C1A;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .phase-header.blue  { background: #2980b9; }
+  .phase-header.green { background: #27ae60; }
+  .phase-days { font-size: 1.5rem; font-weight: 800; }
+  .phase-name { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+  .phase-body { background: white; border-radius: 12px; padding: 24px; }
+  .phase-body h3 { margin-bottom: 12px; color: #1a1a2e; }
+  .phase-body ul { list-style: none; }
+  .phase-body li { padding: 6px 0; font-size: 0.95rem; color: #444; }
+  .phase-body li::before { content: "→ "; color: #E85C1A; font-weight: 700; }
+
+  /* Causa raíz */
+  .root-causes { margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+  .cause {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .cause-num {
+    background: #E85C1A;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 800;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cause-num.blue { background: #2980b9; }
+  .cause-num.yellow { background: #f5a623; }
+  .cause-content h3 { margin-bottom: 4px; }
+  .cause-content p { font-size: 0.95rem; color: #555; }
+
+  /* Propuesta valor */
+  .value-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .value-box {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .value-box h3 { margin-bottom: 12px; color: #ffd6b0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+  .value-big { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .value-box p { font-size: 0.9rem; opacity: 0.85; line-height: 1.5; }
+
+  /* Compromiso */
+  .commitment {
+    background: #E85C1A;
+    color: white;
+    border-radius: 16px;
+    padding: 40px;
+    margin-top: 32px;
+    text-align: center;
+  }
+  .commitment p { font-size: 1.3rem; line-height: 1.6; }
+  .commitment strong { font-size: 1.5rem; display: block; margin-top: 12px; }
+
+  /* Header de cada slide */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .slide-num { font-size: 0.8rem; color: #bbb; font-weight: 600; letter-spacing: 1px; }
+
+  /* Logo/brand area */
+  .brand { font-weight: 800; font-size: 1rem; color: #E85C1A; }
+
+  .subtitle { font-size: 1.2rem; opacity: 0.7; margin-top: 16px; line-height: 1.5; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+
+  .alert-box {
+    background: #fff3cd;
+    border: 2px solid #f5a623;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .alert-box p { color: #7d5a00; }
+
+  @media print {
+    .slide { page-break-after: always; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: PORTADA -->
+<div class="slide bg-dark">
+  <div>
+    <span class="tag tag-yellow">Primera conversación ejecutiva</span>
+    <h1 style="color:white; margin-top: 12px;">Kreditu × Atom<br><span style="color:#E85C1A;">Plan de recuperación</span></h1>
+    <p class="subtitle">Diagnóstico ejecutivo · 40 días para la renovación</p>
+    <div style="margin-top: 48px; display: flex; gap: 40px;">
+      <div>
+        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">PRESENTADO POR</div>
+        <div style="font-size:1.1rem; font-weight:600;">Guillermo Camahuali</div>
+        <div style="font-size:0.9rem; color:#aaa;">Customer Success Manager · Atom</div>
+      </div>
+      <div>
+        <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">PARA</div>
+        <div style="font-size:1.1rem; font-weight:600;">Valentina Ríos</div>
+        <div style="font-size:0.9rem; color:#aaa;">Head of Digital Channels · Kreditu</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: ESTADO DE LA CUENTA -->
+<div class="slide bg-light">
+  <div class="slide-header">
+    <span class="tag">Estado actual</span>
+    <span class="slide-num brand">Atom</span>
+  </div>
+  <h2>Lo que muestran los datos</h2>
+  <p style="color:#555;">7 meses de contrato. La foto hoy no refleja el potencial de Kreditu en Atom.</p>
+
+  <div class="metrics-grid">
+    <div class="metric red">
+      <div class="metric-value red">41%</div>
+      <div class="metric-label">Automatización actual</div>
+      <div class="metric-sub">Meta: 75% — brecha de 34 pp</div>
+    </div>
+    <div class="metric red">
+      <div class="metric-value red">3/12</div>
+      <div class="metric-label">Flujos activos</div>
+      <div class="metric-sub">Solo 25% del potencial configurado</div>
+    </div>
+    <div class="metric yellow">
+      <div class="metric-value yellow">3.4/5</div>
+      <div class="metric-label">CSAT promedio</div>
+      <div class="metric-sub">Por debajo del estándar Atom (4.2)</div>
+    </div>
+    <div class="metric red">
+      <div class="metric-value red">18/60</div>
+      <div class="metric-label">Agentes activos</div>
+      <div class="metric-sub">30% del equipo usa la herramienta</div>
+    </div>
+  </div>
+
+  <div class="alert-box" style="margin-top: 28px;">
+    <p><strong>⚠️ Señal crítica:</strong> 38 tickets de soporte/mes con solo 2 sesiones de CSM en 7 meses. El equipo de Kreditu nunca tuvo el acompañamiento que contrató.</p>
+  </div>
+</div>
+
+<!-- SLIDE 3: DIAGNÓSTICO — CAUSAS RAÍZ -->
+<div class="slide bg-white">
+  <div class="slide-header">
+    <span class="tag">Diagnóstico</span>
+    <span class="slide-num brand">Atom</span>
+  </div>
+  <h2>¿Por qué estamos aquí?</h2>
+  <p style="color:#555;">No es un problema de producto. Es un problema de implementación y acompañamiento.</p>
+
+  <div class="root-causes">
+    <div class="cause">
+      <div class="cause-num">1</div>
+      <div class="cause-content">
+        <h3>El caso de uso #1 nunca funcionó</h3>
+        <p>El flujo de cobros automatizados — la razón principal por la que Kreditu contrató Atom — nunca se configuró correctamente. Sin ese resultado, todo lo demás pierde valor.</p>
+      </div>
+    </div>
+    <div class="cause">
+      <div class="cause-num blue">2</div>
+      <div class="cause-content">
+        <h3>Alta rotación interna sin re-onboarding</h3>
+        <p>3 coordinadores cambiaron en 7 meses. Cada vez que rotó el equipo, el conocimiento de Atom se perdió. Sin CSM activo, nadie reencaminó la adopción.</p>
+      </div>
+    </div>
+    <div class="cause">
+      <div class="cause-num yellow">3</div>
+      <div class="cause-content">
+        <h3>Bloqueo técnico no resuelto + riesgo regulatorio</h3>
+        <p>La integración API del scoring crediticio lleva 5 meses bloqueada. Además, 2 quejas formales por información incorrecta de tasas son una señal de alerta que requiere atención inmediata.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: PLAN 40 DÍAS -->
+<div class="slide bg-white">
+  <div class="slide-header">
+    <span class="tag">Plan de acción</span>
+    <span class="slide-num brand">Atom</span>
+  </div>
+  <h2>40 días · 3 fases concretas</h2>
+
+  <div class="timeline">
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-days">Días 1–10</div>
+        <div class="phase-name">RECUPERAR CONFIANZA</div>
+      </div>
+      <div class="phase-body">
+        <h3>Cimientos: estabilizar y escuchar</h3>
+        <ul>
+          <li>Auditoría completa de los 3 flujos activos — identificar qué está roto</li>
+          <li>Call con Valentina + coordinador técnico actual: mapear bloqueos reales</li>
+          <li>Revisar los 2 mensajes incorrectos de tasas y corregirlos hoy</li>
+          <li>Definir juntos la métrica de éxito para la renovación</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header blue">
+        <div class="phase-days">Días 11–25</div>
+        <div class="phase-name">ACTIVAR EL VALOR</div>
+      </div>
+      <div class="phase-body">
+        <h3>Quick wins: cobros + formación</h3>
+        <ul>
+          <li><strong>Prioridad #1:</strong> configurar y activar el flujo de cobros automatizados</li>
+          <li>Workshop de 2h con el equipo actual — re-onboarding estructurado</li>
+          <li>Activar 3 flujos adicionales de alto impacto para Kreditu</li>
+          <li>Alternativa al bloqueo API: importación CSV de scoring para no frenar el flujo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header green">
+        <div class="phase-days">Días 26–40</div>
+        <div class="phase-name">DEMOSTRAR Y RENOVAR</div>
+      </div>
+      <div class="phase-body">
+        <h3>Resultados: de 41% a 65%+ de automatización</h3>
+        <ul>
+          <li>Reporte ejecutivo: automatización, tickets resueltos, CSAT</li>
+          <li>Proyección de ROI: ahorro operativo vs. costo del plan Business</li>
+          <li>Propuesta de renovación con hoja de ruta de los próximos 6 meses</li>
+          <li>Sesión mensual de CSM fija en calendario (no puede volver a faltar)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: PROPUESTA DE VALOR PARA RENOVACIÓN -->
+<div class="slide bg-dark">
+  <div class="slide-header">
+    <span class="tag tag-yellow">Propuesta de renovación</span>
+    <span class="slide-num" style="color:#aaa;">Atom</span>
+  </div>
+  <h2 style="color:white;">Lo que Kreditu puede lograr<br><span style="color:#E85C1A;">en los próximos 6 meses</span></h2>
+
+  <div class="value-grid">
+    <div class="value-box">
+      <h3>Meta de automatización</h3>
+      <div class="value-big">75%+</div>
+      <p>Pasar de 41% hoy a superar la meta contratada. Cobros + consultas + solicitudes corriendo sin intervención humana.</p>
+    </div>
+    <div class="value-box">
+      <h3>Flujos activos</h3>
+      <div class="value-big">10/12</div>
+      <p>De 3 flujos activos hoy a 10 en 6 meses. Cada flujo nuevo = menos tickets de soporte y menos carga operativa.</p>
+    </div>
+    <div class="value-box">
+      <h3>Reducción de tickets</h3>
+      <div class="value-big">–60%</div>
+      <p>De 38 tickets/mes a menos de 15. La mayoría son consultas repetitivas que Atom puede resolver automáticamente.</p>
+    </div>
+    <div class="value-box">
+      <h3>CSAT objetivo</h3>
+      <div class="value-big">4.2/5</div>
+      <p>Subir de 3.4 al estándar Atom. Los flujos bien configurados mejoran la experiencia del usuario final de Kreditu.</p>
+    </div>
+  </div>
+
+  <div class="commitment">
+    <p>Mi compromiso personal como CSM: <strong>sesión quincenal fija · reporte mensual de resultados · respuesta en menos de 4h</strong></p>
+  </div>
+</div>
+
+<!-- SLIDE 6: PRÓXIMOS PASOS -->
+<div class="slide bg-orange">
+  <div class="slide-header">
+    <span class="tag tag-dark">Acción inmediata</span>
+    <span class="slide-num" style="color:rgba(255,255,255,0.6);">Atom</span>
+  </div>
+  <h2>Salimos hoy con tres acuerdos</h2>
+
+  <div class="cards-grid">
+    <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:28px; border:1px solid rgba(255,255,255,0.3);">
+      <div style="font-size:3rem; margin-bottom:12px;">📅</div>
+      <h3 style="color:white; font-size:1.1rem; margin-bottom:8px;">1. Call técnico esta semana</h3>
+      <p style="color:rgba(255,255,255,0.85); font-size:0.9rem;">Con el equipo de tecnología de Kreditu para auditar el flujo de cobros y definir la solución al bloqueo API.</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:28px; border:1px solid rgba(255,255,255,0.3);">
+      <div style="font-size:3rem; margin-bottom:12px;">🔧</div>
+      <h3 style="color:white; font-size:1.1rem; margin-bottom:8px;">2. Flujo de cobros en vivo en 10 días</h3>
+      <p style="color:rgba(255,255,255,0.85); font-size:0.9rem;">Primera entrega concreta. El caso de uso más crítico funcionando antes del día 10. Eso es lo que cambia la conversación de renovación.</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:28px; border:1px solid rgba(255,255,255,0.3);">
+      <div style="font-size:3rem; margin-bottom:12px;">📊</div>
+      <h3 style="color:white; font-size:1.1rem; margin-bottom:8px;">3. Definir la métrica de renovación hoy</h3>
+      <p style="color:rgba(255,255,255,0.85); font-size:0.9rem;">¿Qué número necesita ver Valentina para renovar con confianza? Lo definimos juntos ahora y construimos hacia ese objetivo.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:48px; text-align:center;">
+    <p style="color:white; font-size:1.2rem; font-weight:300;">Valentina, <strong>los próximos 40 días son nuestros.</strong><br>El pasado ya pasó — y lo que viene depende de lo que hagamos juntos a partir de hoy.</p>
+  </div>
+</div>
+
+</body>
+</html>
