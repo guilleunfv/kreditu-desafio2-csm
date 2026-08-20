@@ -6,16 +6,25 @@
 
 ---
 
+## Video de presentación
+
+▶️ **https://youtu.be/PS5NqOpDOvU**
+
+Primera conversación ejecutiva con Valentina Ríos, Head of Digital Channels de Kreditu. Duración: 5 minutos.
+
+---
+
+## Diagnóstico ejecutivo (presentación)
+
+📊 **[Ver presentación](kreditu_diagnostico.html)**
+
+6 slides con análisis de cuenta, causas raíz y plan de recuperación en 40 días.
+
+---
+
 ## Caso
 
 Kreditu es una fintech colombiana con 200,000 usuarios activos en WhatsApp, plan Business de Atom ($2,800 USD/mes), sin CSM activo desde hace 2 meses y renovación en 40 días.
-
-## Entregables
-
-| Archivo | Descripción |
-|---|---|
-| `kreditu_diagnostico.html` | Diagnóstico ejecutivo — 6 slides con análisis, causas raíz y plan de recuperación en 40 días |
-| `kreditu_presentacion_csm.mp4` | Video 5 minutos — Primera conversación ejecutiva con Valentina Ríos, Head of Digital Channels |
 
 ## Resumen del plan propuesto
 
